@@ -1,0 +1,33 @@
+//@version=5
+indicator("SMA & EMA Overlay", overlay=true)
+
+// MA Type toggle for the first group
+maType = input.string("SMA", title="MA Type (10/20/50/200)", options=["SMA", "EMA"])
+
+// --- MA Group (10, 20, 50, 200) ---
+ma10  = maType == "SMA" ? ta.sma(close, 10)  : ta.ema(close, 10)
+ma20  = maType == "SMA" ? ta.sma(close, 20)  : ta.ema(close, 20)
+ma50  = maType == "SMA" ? ta.sma(close, 50)  : ta.ema(close, 50)
+ma200 = maType == "SMA" ? ta.sma(close, 200) : ta.ema(close, 200)
+
+// --- EMA Group (20, 63, 150) ---
+ema20  = ta.ema(close, 20)
+ema63  = ta.ema(close, 63)
+ema150 = ta.ema(close, 150)
+
+// --- Plotting ---
+plot(ma10,   title="10 MA",   color=color.green,  linewidth=2)
+plot(ma20,   title="20 MA",   color=color.teal,   linewidth=2)
+plot(ma50,   title="50 MA",   color=color.orange, linewidth=2)
+plot(ma200,  title="200 MA",  color=color.blue,   linewidth=2)
+
+plot(ema20,  title="EMA 20",  color=color.fuchsia, linewidth=2, style=plot.style_line)
+plot(ema63,  title="EMA 63",  color=color.purple,  linewidth=2, style=plot.style_line)
+plot(ema150, title="EMA 150", color=color.red,     linewidth=2, style=plot.style_line)
+
+// --- Optional: Highlight crossover zones (50 vs 200 MA only) ---
+bullishCross = ta.crossover(ma50, ma200)
+bearishCross = ta.crossunder(ma50, ma200)
+
+bgcolor(bullishCross ? color.new(color.green, 85) : na)
+bgcolor(bearishCross ? color.new(color.red, 85) : na)
